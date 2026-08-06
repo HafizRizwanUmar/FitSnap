@@ -8,18 +8,13 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export function appRoutes(app) {
   // Serve dashboard (protected) - App Bridge embedded
   app.get('/', async (req, res) => {
-    const shop = req.query.shop;
-    const host = req.query.host;
+    const { shop, host, embedded } = req.query;
 
     if (!shop) {
       return res.status(400).send('Missing shop parameter');
     }
 
-    // Check if installed
-    const sessionId = shopify.session.getOfflineId(shop);
-    const session = await shopify.config.sessionStorage.loadSession(sessionId);
-
-    if (!session?.accessToken) {
+    if (embedded !== '1') {
       return res.send(`
         <!DOCTYPE html>
         <html>
@@ -33,6 +28,8 @@ export function appRoutes(app) {
         </html>
       `);
     }
+
+
 
     res.setHeader('Content-Security-Policy', `frame-ancestors https://${encodeURIComponent(shop)} https://admin.shopify.com;`);
     // Serve the dashboard HTML with App Bridge config injected
