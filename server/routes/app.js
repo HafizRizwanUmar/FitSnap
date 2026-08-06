@@ -19,11 +19,22 @@ export function appRoutes(app) {
     const sessionId = shopify.session.getOfflineId(shop);
     const session = await shopify.config.sessionStorage.loadSession(sessionId);
 
-    if (!session || !session.accessToken) {
-      // Redirect to OAuth
-      return res.redirect(`/shopify/auth?shop=${shop}`);
+    if (!session?.accessToken) {
+      return res.send(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <script src="https://cdn.shopify.com/shopifycloud/app-bridge.js"></script>
+            <script>
+              window.open(window.location.origin + '/shopify/auth?shop=${shop}&host=${host}', '_top');
+            </script>
+          </head>
+          <body>Redirecting to authenticate...</body>
+        </html>
+      `);
     }
 
+    res.setHeader('Content-Security-Policy', `frame-ancestors https://${encodeURIComponent(shop)} https://admin.shopify.com;`);
     // Serve the dashboard HTML with App Bridge config injected
     let html = fs.readFileSync(path.join(process.cwd(), 'views/index.html'), 'utf-8');
     html = html
