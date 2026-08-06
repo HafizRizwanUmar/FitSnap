@@ -1,0 +1,37 @@
+name = "FitSnap – Size Chart & Guide Popup"
+client_id = "2a2a380161462b32d607dcb6515eee64"
+application_url = "https://your-fitsnap.vercel.app"
+embedded = true
+
+[access_scopes]
+scopes = "read_products,write_products,read_themes,write_themes"
+
+[auth]
+redirect_urls = ["https://your-fitsnap.vercel.app/shopify/auth/callback"]
+
+[webhooks]
+api_version = "2024-10"
+
+[[webhooks.subscriptions]]
+topics = ["app/uninstalled"]
+uri = "/webhooks/app/uninstalled"
+
+[[webhooks.subscriptions]]
+topics = ["customers/data_request"]
+uri = "/webhooks/customers/data_request"
+
+[[webhooks.subscriptions]]
+topics = ["customers/redact"]
+uri = "/webhooks/customers/redact"
+
+[[webhooks.subscriptions]]
+topics = ["shop/redact"]
+uri = "/webhooks/shop/redact"
+
+[pos]
+embedded = false
+
+[[extensions]]
+type = "theme"
+name = "FitSnap Size Chart"
+handle = "fitsnap-size-chart"

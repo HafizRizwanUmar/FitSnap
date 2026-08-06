@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FitSnap – Size Chart & Guide Popup</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/assets/images/logo.png">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/assets/css/style.css">
+
+<!-- Shopify App Bridge -->
+<script src="https://unpkg.com/@shopify/app-bridge@3"></script>
+<script src="https://unpkg.com/@shopify/app-bridge-utils@3"></script>
+<script>
+  window.__SHOPIFY_DEV_HOST = '{{HOST}}';
+  var AppBridge = window['app-bridge'];
+  var createApp = AppBridge.default;
+  var actions = AppBridge.actions;
+  var TitleBar = actions.TitleBar;
+  var Toast = actions.Toast;
+
+  var ShopifyApp = createApp({
+    apiKey: '{{SHOPIFY_API_KEY}}',
+    host: new URLSearchParams(location.search).get('host') || '{{HOST}}',
+    forceRedirect: true,
+  });
+
+  // Global toast helper for in-app notifications
+  window.showToast = function(message, isError) {
+    var toastOptions = { message: message, duration: 3000 };
+    if (isError) toastOptions.isError = true;
+    var toastNotice = Toast.create(ShopifyApp, toastOptions);
+    toastNotice.dispatch(Toast.Action.SHOW);
+  };
+</script>
+</head>
+<body>
+    <!-- Top Navigation -->
+    <nav class="navbar glass-effect">
+        <div class="nav-brand">
+            <img src="/assets/images/logo.png" alt="FitSnap Logo" class="logo">
+            <h1>FitSnap</h1>
+        </div>
+        <div class="nav-links">
+            <button class="nav-btn active" data-target="dashboard">Dashboard</button>
+            <button class="nav-btn" data-target="charts">Charts</button>
+            <button class="nav-btn" data-target="products">Products</button>
+            <button class="nav-btn" data-target="widget">Widget</button>
+            <button class="nav-btn" data-target="analytics">Analytics</button>
+            <button class="nav-btn" data-target="billing">Billing</button>
+        </div>
+        <div class="nav-user">
+            <div class="notification-bell">
+                <span class="bell-icon">🔔</span>
+                <span class="badge">3</span>
+            </div>
+            <div class="avatar">
+                <img src="https://ui-avatars.com/api/?name=Hafiz&background=4F46E5&color=fff" alt="User Avatar">
+            </div>
+            <span class="store-name">My Awesome Store</span>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="content-wrapper">
+        
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="page-section active">
+            <div class="welcome-banner premium-gradient">
+                <div class="banner-content">
+                    <h2>Welcome back, Hafiz! 👋</h2>
+                    <p>Your size charts have boosted conversions by 8.3% this month.</p>
+                </div>
+                <div class="banner-illustration">
+                    📈
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card glass-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-details">
+                        <h3>Total Charts</h3>
+                        <p class="stat-number">3</p>
+                    </div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-icon">👕</div>
+                    <div class="stat-details">
+                        <h3>Products Linked</h3>
+                        <p class="stat-number">12</p>
+                    </div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-icon">👁️</div>
+                    <div class="stat-details">
+                        <h3>Guide Opens</h3>
+                        <p class="stat-number">2.4K</p>
+                    </div>
+                </div>
+                <div class="stat-card glass-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-details">
+                        <h3>Conversion Lift</h3>
+                        <p class="stat-number positive">+8.3%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <button class="btn btn-primary" onclick="app.navigateTo('charts')">✨ Create New Chart</button>
+                <button class="btn btn-secondary" onclick="app.navigateTo('products')">🔗 Link Products</button>
+                <button class="btn btn-secondary" onclick="app.navigateTo('widget')">🎨 Customize Widget</button>
+            </div>
+
+            <div class="recent-activity glass-card">
+                <h3>Recent Activity</h3>
+                <ul class="activity-list">
+                    <li><span class="time">10 mins ago</span> You updated "Men's T-Shirts" chart.</li>
+                    <li><span class="time">2 hours ago</span> 15 new guide opens for "Summer Dresses".</li>
+                    <li><span class="time">1 day ago</span> "Women's Shoes" chart linked to 5 new products.</li>
+                </ul>
+            </div>
+            
+            <div class="upgrade-banner">
+                <p>🚀 Unlock unlimited size charts and advanced customizations.</p>
+                <button class="btn btn-outline" onclick="app.navigateTo('billing')">Upgrade to Pro</button>
+            </div>
+        </section>
+
+        <!-- CHARTS -->
+        <section id="charts" class="page-section hidden">
+            <div class="section-header">
+                <h2>Your Size Charts</h2>
+                <button class="btn btn-primary" id="createNewChartBtn">✨ Create New Chart</button>
+            </div>
+            
+            <div class="chart-list">
+                <div class="chart-card glass-card">
+                    <div class="chart-thumb">👕</div>
+                    <div class="chart-info">
+                        <h3>Men's T-Shirts</h3>
+                        <p>Linked to 5 products • Last modified: Today</p>
+                    </div>
+                    <div class="chart-actions">
+                        <button class="btn-icon edit-btn">✏️</button>
+                    </div>
+                </div>
+                <div class="chart-card glass-card">
+                    <div class="chart-thumb">👗</div>
+                    <div class="chart-info">
+                        <h3>Women's Dresses</h3>
+                        <p>Linked to 7 products • Last modified: 3 days ago</p>
+                    </div>
+                    <div class="chart-actions">
+                        <button class="btn-icon edit-btn">✏️</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart Editor Modal -->
+            <div id="chartEditorModal" class="modal-overlay hidden">
+                <div class="modal-content glass-card large-modal">
+                    <div class="modal-header">
+                        <h2>Edit Size Chart</h2>
+                        <button class="close-modal">&times;</button>
+                    </div>
+                    <div class="modal-body editor-layout">
+                        <div class="editor-controls">
+                            <div class="form-group">
+                                <label>Chart Name</label>
+                                <input type="text" id="chartNameInput" value="New Size Chart" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Category</label>
+                                <select class="form-control">
+                                    <option>Tops</option>
+                                    <option>Bottoms</option>
+                                    <option>Shoes</option>
+                                    <option>Kids</option>
+                                    <option>Custom</option>
+                                </select>
+                            </div>
+                            <div class="form-group toggle-group">
+                                <label>Measurements</label>
+                                <div class="toggle-switch">
+                                    <span class="active">CM</span>
+                                    <span>IN</span>
+                                </div>
+                            </div>
+                            <div class="table-builder">
+                                <div class="builder-actions">
+                                    <button class="btn btn-sm btn-secondary" id="addRowBtn">+ Row</button>
+                                    <button class="btn btn-sm btn-secondary" id="addColBtn">+ Column</button>
+                                    <button class="btn btn-sm btn-outline">Fill Template</button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table id="builderTable" class="chart-table">
+                                        <thead>
+                                            <tr>
+                                                <th contenteditable="true">Size</th>
+                                                <th contenteditable="true">Chest</th>
+                                                <th contenteditable="true">Waist</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td contenteditable="true">S</td>
+                                                <td contenteditable="true">90</td>
+                                                <td contenteditable="true">76</td>
+                                            </tr>
+                                            <tr>
+                                                <td contenteditable="true">M</td>
+                                                <td contenteditable="true">96</td>
+                                                <td contenteditable="true">82</td>
+                                            </tr>
+                                            <tr>
+                                                <td contenteditable="true">L</td>
+                                                <td contenteditable="true">102</td>
+                                                <td contenteditable="true">88</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Fit Advice / Notes</label>
+                                <textarea class="form-control" rows="3">Fits true to size. If between sizes, size up.</textarea>
+                            </div>
+                        </div>
+                        <div class="editor-preview glass-card">
+                            <h3>Live Preview</h3>
+                            <div class="widget-preview-box">
+                                <div class="preview-content">
+                                    <h4>New Size Chart</h4>
+                                    <div class="preview-toggle">
+                                        <button class="active">CM</button>
+                                        <button>IN</button>
+                                    </div>
+                                    <table class="chart-table">
+                                        <thead>
+                                            <tr><th>Size</th><th>Chest</th><th>Waist</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td>S</td><td>90</td><td>76</td></tr>
+                                            <tr><td>M</td><td>96</td><td>82</td></tr>
+                                            <tr><td>L</td><td>102</td><td>88</td></tr>
+                                        </tbody>
+                                    </table>
+                                    <p class="preview-notes">Fits true to size. If between sizes, size up.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary cancel-modal">Cancel</button>
+                        <button class="btn btn-primary" id="saveChartBtn">Save Chart</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUCTS -->
+        <section id="products" class="page-section hidden">
+            <div class="section-header">
+                <h2>Product Assignment</h2>
+                <div class="search-bar">
+                    <input type="text" placeholder="Search products..." class="form-control">
+                </div>
+            </div>
+            
+            <div class="products-list glass-card">
+                <div class="list-actions">
+                    <button class="btn btn-sm btn-secondary">Bulk Assign</button>
+                </div>
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox"></th>
+                            <th>Product Name</th>
+                            <th>Status</th>
+                            <th>Assigned Chart</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>Classic White Tee</td>
+                            <td><span class="badge success">Active</span></td>
+                            <td>
+                                <select class="form-control form-sm">
+                                    <option>Men's T-Shirts</option>
+                                    <option>Women's Dresses</option>
+                                    <option>-- Unassigned --</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>Summer Floral Dress</td>
+                            <td><span class="badge success">Active</span></td>
+                            <td>
+                                <select class="form-control form-sm">
+                                    <option>Women's Dresses</option>
+                                    <option>Men's T-Shirts</option>
+                                    <option>-- Unassigned --</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><input type="checkbox"></td>
+                            <td>Vintage Denim Jacket</td>
+                            <td><span class="badge warning">No Chart</span></td>
+                            <td>
+                                <select class="form-control form-sm">
+                                    <option selected>-- Unassigned --</option>
+                                    <option>Men's T-Shirts</option>
+                                    <option>Women's Dresses</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- WIDGET CUSTOMIZER -->
+        <section id="widget" class="page-section hidden">
+            <div class="section-header">
+                <h2>Widget Customizer</h2>
+            </div>
+            
+            <div class="widget-layout">
+                <div class="widget-settings glass-card">
+                    <h3>Settings</h3>
+                    
+                    <div class="form-group">
+                        <label>Button Text</label>
+                        <input type="text" value="Size Guide" class="form-control" id="widgetBtnText">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Button Position</label>
+                        <select class="form-control">
+                            <option>Below Product Title</option>
+                            <option selected>Above Add to Cart</option>
+                            <option>Custom Anchor</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Button Style</label>
+                        <select class="form-control" id="widgetBtnStyle">
+                            <option value="text">Text Link with Icon</option>
+                            <option value="outline">Outlined Button</option>
+                            <option value="filled" selected>Filled Button</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Popup Style</label>
+                        <select class="form-control">
+                            <option selected>Modal / Pop-up</option>
+                            <option>Slide-in Drawer</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group color-picker-group">
+                        <label>Accent Color</label>
+                        <input type="color" value="#4F46E5" id="widgetColorPicker">
+                    </div>
+
+                    <div class="snippet-section">
+                        <h4>Embed Snippet</h4>
+                        <div class="code-block">
+                            <code>&lt;script src="https://mycdn.com/sizesnap-widget.js"&gt;&lt;/script&gt;</code>
+                        </div>
+                        <button class="btn btn-outline btn-sm">Copy Snippet</button>
+                    </div>
+                </div>
+                
+                <div class="widget-preview-area glass-card">
+                    <h3>Storefront Preview</h3>
+                    <div class="mock-product-page">
+                        <div class="mock-image"></div>
+                        <div class="mock-details">
+                            <h2 class="mock-title">Premium T-Shirt</h2>
+                            <p class="mock-price">$29.99</p>
+                            
+                            <div class="mock-variants">
+                                <span>S</span><span>M</span><span>L</span>
+                            </div>
+                            
+                            <!-- Inject Widget Button Here -->
+                            <button class="mock-widget-btn" id="previewWidgetBtn" style="background-color: #4F46E5; color: white; padding: 10px 15px; border-radius: 8px; border: none; cursor: pointer; font-family: Inter, sans-serif; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                                📏 <span id="previewWidgetBtnText">Size Guide</span>
+                            </button>
+                            
+                            <button class="mock-add-cart">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ANALYTICS -->
+        <section id="analytics" class="page-section hidden">
+            <div class="section-header">
+                <h2>Analytics</h2>
+            </div>
+            
+            <div class="analytics-layout">
+                <div class="chart-container glass-card">
+                    <h3>Guide Opens (Last 30 Days)</h3>
+                    <canvas id="analyticsChart"></canvas>
+                </div>
+                
+                <div class="top-charts glass-card">
+                    <h3>Top Performing Charts</h3>
+                    <table class="modern-table">
+                        <thead>
+                            <tr>
+                                <th>Chart Name</th>
+                                <th>Opens</th>
+                                <th>Conv. Rate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Men's T-Shirts</td>
+                                <td>1,240</td>
+                                <td><span class="positive">12.4%</span></td>
+                            </tr>
+                            <tr>
+                                <td>Women's Dresses</td>
+                                <td>890</td>
+                                <td><span class="positive">9.8%</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- BILLING -->
+        <section id="billing" class="page-section hidden">
+            <div class="section-header">
+                <h2>Billing &amp; Subscription</h2>
+                <p style="color:var(--text-muted);margin-top:4px;">Try everything free for 3 days — no credit card required</p>
+            </div>
+
+            <!-- Trial Status Banner -->
+            <div class="trial-banner glass-card" style="background:linear-gradient(135deg,#EEF2FF 0%,#E0E7FF 100%);border:2px solid #C7D2FE;border-radius:16px;padding:28px 32px;margin-bottom:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+                <div style="display:flex;align-items:center;gap:16px;">
+                    <div style="width:56px;height:56px;background:linear-gradient(135deg,#4F46E5,#7C3AED);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;">⏳</div>
+                    <div>
+                        <div style="font-size:13px;font-weight:600;color:#6366F1;text-transform:uppercase;letter-spacing:.05em;">Free Trial Active</div>
+                        <div style="font-size:22px;font-weight:700;color:#1E1B4B;margin:2px 0;">Full access — all features unlocked</div>
+                        <div style="font-size:14px;color:#6B7280;">Your trial expires in <strong id="trial-countdown" style="color:#4F46E5;">2 days, 14 hrs, 37 min</strong></div>
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:13px;color:#6B7280;margin-bottom:8px;">Renews at</div>
+                    <div style="font-size:28px;font-weight:800;color:#1E1B4B;">$9<span style="font-size:15px;font-weight:500;color:#6B7280;">/month</span></div>
+                </div>
+            </div>
+
+            <!-- Trial countdown progress bar -->
+            <div class="glass-card" style="padding:24px 32px;margin-bottom:32px;border-radius:16px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span style="font-size:14px;font-weight:600;color:#374151;">Trial Progress</span>
+                    <span style="font-size:13px;color:#6B7280;">Day 1 of 3</span>
+                </div>
+                <div style="background:#E5E7EB;border-radius:99px;height:10px;overflow:hidden;">
+                    <div style="width:33%;height:100%;background:linear-gradient(90deg,#4F46E5,#7C3AED);border-radius:99px;transition:width .6s ease;"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:8px;">
+                    <span style="font-size:12px;color:#9CA3AF;">Started today</span>
+                    <span style="font-size:12px;color:#9CA3AF;">Expires in 3 days</span>
+                </div>
+            </div>
+
+            <!-- Single Plan Card -->
+            <div style="max-width:480px;margin:0 auto;">
+                <div class="glass-card premium-border" style="border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(79,70,229,.15);">
+                    <div style="background:linear-gradient(135deg,#4F46E5,#7C3AED);padding:32px;text-align:center;">
+                        <div style="font-size:13px;font-weight:700;color:#C7D2FE;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px;">FitSnap Full Plan</div>
+                        <div style="display:flex;align-items:flex-start;justify-content:center;gap:4px;">
+                            <span style="font-size:20px;font-weight:600;color:#E0E7FF;margin-top:8px;">$</span>
+                            <span style="font-size:64px;font-weight:800;color:#fff;line-height:1;">9</span>
+                            <span style="font-size:16px;color:#C7D2FE;margin-top:28px;">/month</span>
+                        </div>
+                        <div style="font-size:13px;color:#A5B4FC;margin-top:6px;">or $84/year · save 22%</div>
+                    </div>
+                    <div style="padding:32px;">
+                        <div style="font-size:13px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.05em;margin-bottom:16px;">Everything included</div>
+                        <ul style="list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:12px;">
+                            <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#111827;"><span style="width:22px;height:22px;background:#EEF2FF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">✅</span> Unlimited size charts</li>
+                            <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#111827;"><span style="width:22px;height:22px;background:#EEF2FF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">✅</span> All widget styles &amp; positions</li>
+                            <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#111827;"><span style="width:22px;height:22px;background:#EEF2FF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">✅</span> CM / Inch toggle on popup</li>
+                            <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#111827;"><span style="width:22px;height:22px;background:#EEF2FF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">✅</span> Premium chart templates</li>
+                            <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#111827;"><span style="width:22px;height:22px;background:#EEF2FF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">✅</span> Conversion analytics &amp; reports</li>
+                            <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#111827;"><span style="width:22px;height:22px;background:#EEF2FF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">✅</span> Priority support (24h response)</li>
+                            <li style="display:flex;align-items:center;gap:12px;font-size:15px;color:#111827;"><span style="width:22px;height:22px;background:#EEF2FF;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;">✅</span> Automatic product linking</li>
+                        </ul>
+                        <button class="btn btn-primary shimmer-btn" style="width:100%;padding:16px;font-size:16px;border-radius:12px;">Subscribe — $9/month</button>
+                        <p style="text-align:center;font-size:13px;color:#9CA3AF;margin-top:12px;">Cancel anytime · Charged after 3-day trial</p>
+                    </div>
+                </div>
+
+                <!-- FAQ -->
+                <div style="margin-top:32px;">
+                    <h3 style="font-size:18px;font-weight:700;margin-bottom:20px;color:#111827;">Frequently asked questions</h3>
+                    <div style="display:flex;flex-direction:column;gap:16px;">
+                        <div class="glass-card" style="padding:18px 20px;border-radius:12px;">
+                            <div style="font-weight:600;color:#111827;margin-bottom:6px;">Will I be charged during the trial?</div>
+                            <div style="font-size:14px;color:#6B7280;">No. Your 3-day trial is completely free with no credit card required. You only pay after the trial ends if you choose to subscribe.</div>
+                        </div>
+                        <div class="glass-card" style="padding:18px 20px;border-radius:12px;">
+                            <div style="font-weight:600;color:#111827;margin-bottom:6px;">What happens when the trial ends?</div>
+                            <div style="font-size:14px;color:#6B7280;">Your size charts will remain saved, but the widget will stop showing on your store until you subscribe. No data is ever deleted.</div>
+                        </div>
+                        <div class="glass-card" style="padding:18px 20px;border-radius:12px;">
+                            <div style="font-weight:600;color:#111827;margin-bottom:6px;">Can I cancel anytime?</div>
+                            <div style="font-size:14px;color:#6B7280;">Yes — cancel with one click from this page, effective at the end of your current billing period.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+    </main>
+
+    <!-- Onboarding Wizard -->
+    <div id="onboardingWizard" class="modal-overlay hidden">
+        <div class="modal-content glass-card onboarding-modal">
+            <div class="wizard-steps">
+                <div class="step active" id="step1">
+                    <div class="step-icon">👋</div>
+                    <h2>Welcome to FitSnap!</h2>
+                    <p>Let's get your first beautiful size chart set up in minutes. No coding required.</p>
+                    <button class="btn btn-primary" onclick="app.nextStep(2)">Get Started</button>
+                </div>
+                <div class="step hidden" id="step2">
+                    <div class="step-icon">🎨</div>
+                    <h2>Match Your Brand</h2>
+                    <p>Customize the widget to perfectly match your store's theme.</p>
+                    <button class="btn btn-primary" onclick="app.nextStep(3)">Next</button>
+                </div>
+                <div class="step hidden" id="step3">
+                    <div class="step-icon">🚀</div>
+                    <h2>Ready to Launch</h2>
+                    <p>Link your products and watch your conversions soar and returns drop.</p>
+                    <button class="btn btn-primary" onclick="app.finishOnboarding()">Go to Dashboard</button>
+                </div>
+            </div>
+            <div class="step-indicators">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
+    </div>
+
+    <script src="/assets/js/app.js"></script>
+</body>
+</html>

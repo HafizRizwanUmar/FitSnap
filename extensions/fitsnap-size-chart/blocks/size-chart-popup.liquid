@@ -1,0 +1,32 @@
+{% comment %} FitSnap – Size Chart & Guide Popup Theme App Extension Block {% endcomment %}
+<div id="fitsnap-widget-container" data-chart-id="{{ block.settings.chart_id }}"></div>
+
+<style>
+  .fitsnap-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid #4F46E5;
+    color: #4F46E5;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    background: transparent;
+    transition: all .2s;
+  }
+  .fitsnap-btn:hover { background: #4F46E5; color: #fff; }
+</style>
+
+<button class="fitsnap-btn" onclick="FitSnap.openChart('{{ block.settings.chart_id }}')">{{ block.settings.button_text | default: 'Size Guide' }}</button>
+
+<script src="{{ 'fitsnap-widget.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "FitSnap Size Chart",
+  "target": "section",
+  "settings": [
+    { "type": "text", "id": "chart_id", "label": "Chart ID", "default": "default" },
+    { "type": "text", "id": "button_text", "label": "Button Text", "default": "Size Guide" }
+  ]
+}
+{% endschema %}

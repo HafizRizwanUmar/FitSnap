@@ -1,0 +1,19 @@
+{
+  "name": "fitsnap-size-chart",
+  "version": "1.0.0",
+  "description": "FitSnap – Size Chart & Guide Popup for Shopify",
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "dev": "node --env-file=.env server/index.js",
+    "start": "node server/index.js",
+    "vercel-build": "echo done"
+  },
+  "dependencies": {
+    "@shopify/shopify-api": "^11.0.0",
+    "@shopify/shopify-app-session-storage-memory": "^4.0.0",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.0"
+  }
+}
