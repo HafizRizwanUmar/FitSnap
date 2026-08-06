@@ -1,13 +1,13 @@
 name = "FitSnap – Size Chart & Guide Popup"
 client_id = "2a2a380161462b32d607dcb6515eee64"
-application_url = "https://your-fitsnap.vercel.app"
+application_url = "https://fit-snap-orcin.vercel.app"
 embedded = true
 
 [access_scopes]
 scopes = "read_products,write_products,read_themes,write_themes"
 
 [auth]
-redirect_urls = ["https://your-fitsnap.vercel.app/shopify/auth/callback"]
+redirect_urls = ["https://fit-snap-orcin.vercel.app/shopify/auth/callback"]
 
 [webhooks]
 api_version = "2024-10"

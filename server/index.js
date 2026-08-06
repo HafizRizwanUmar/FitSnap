@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Serve static public assets
-app.use('/assets', express.static(path.join(__dirname, '../public/assets')));
+app.use('/assets', express.static(path.join(process.cwd(), 'public/assets')));
 
 // Register routes
 authRoutes(app);
@@ -35,3 +35,4 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default app;
+

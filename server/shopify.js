@@ -3,10 +3,10 @@ import { MemorySessionStorage } from '@shopify/shopify-app-session-storage-memor
 import '@shopify/shopify-api/adapters/node';
 
 export const shopify = shopifyApi({
-  apiKey: process.env.SHOPIFY_API_KEY,
-  apiSecretKey: process.env.SHOPIFY_API_SECRET,
-  scopes: process.env.SCOPES?.split(','),
-  hostName: process.env.HOST?.replace(/https?:\/\//, '') ?? '',
+  apiKey: (process.env.SHOPIFY_API_KEY || 'missing'),
+  apiSecretKey: (process.env.SHOPIFY_API_SECRET || 'missing'),
+  scopes: (process.env.SCOPES || 'read_products').split(','),
+  hostName: (process.env.HOST || 'https://fit-snap-orcin.vercel.app').replace(/https?:\/\//, '') ?? '',
   apiVersion: ApiVersion.October24,
   isEmbeddedApp: true,
   sessionStorage: new MemorySessionStorage(),
@@ -14,3 +14,4 @@ export const shopify = shopifyApi({
 });
 
 export const SESSION_COOKIE = 'fitsnap_session';
+

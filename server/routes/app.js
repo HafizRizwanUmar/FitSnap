@@ -25,7 +25,7 @@ export function appRoutes(app) {
     }
 
     // Serve the dashboard HTML with App Bridge config injected
-    let html = fs.readFileSync(path.join(__dirname, '../../views/index.html'), 'utf-8');
+    let html = fs.readFileSync(path.join(process.cwd(), 'views/index.html'), 'utf-8');
     html = html
       .replace('{{SHOPIFY_API_KEY}}', process.env.SHOPIFY_API_KEY)
       .replace('{{HOST}}', host || '')
@@ -36,3 +36,4 @@ export function appRoutes(app) {
   // Health check
   app.get('/health', (req, res) => res.json({ status: 'ok', app: 'FitSnap' }));
 }
+
